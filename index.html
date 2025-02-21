@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMR Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Import Google Font that supports English and Bangla -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Suwannaphum:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .bangla-font {
+            font-family: 'Suwannaphum', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen py-10">
+    <div class="bg-white shadow-lg rounded-xl p-8 ml-5 mr-5 sm:ml-5 sm:mr-5">
+        <h2 class="text-center text-2xl font-bold mb-6">BMR Calculator</h2>
+        <div class="flex justify-center items-center my-5"><button onclick="location.reload()" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"> Refresh </button></div>
+        
+        <div class="flex flex-col sm:flex-row justify-center">
+            <!-- Male Calculation -->
+            <div class="mb-6">
+                <h3 class="font-semibold mb-2">For Men</h3>
+                <label class="block">Weight (kg):</label>
+                <input type="number" id="weight" class="w-full p-2 border rounded mb-2 focus:outline-blue-500">
+                <label class="block">Height:</label>
+                <div class="flex space-x-2">
+                    <input type="number" id="feet" placeholder="Feet" class="w-1/2 p-2 border rounded focus:outline-blue-500">
+                    <input type="number" id="inch" placeholder="Inches" class="w-1/2 p-2 border rounded focus:outline-blue-500">
+                </div>
+                <label class="block mt-2">Age:</label>
+                <input type="number" id="age" class="w-full p-2 border rounded mb-4 focus:outline-blue-500">
+                <button id="result" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Calculate</button>
+                <p class="mt-2 text-center">BMR: <span id="BMR" class="font-bold">0</span> kcal/day</p>
+                <p id="health-condition" class="bangla-font mt-4 text-center">Health Condition: <span id="health-condition-text">--</span></p>
+                <p id="suggestion" class="bangla-font mt-2 text-center">Suggestion: <span id="suggestion-text">--</span></p>
+            </div>
+    
+            <div class="flex justify-center items-center my-5"><button onclick="location.reload()" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition sm:block lg:hidden md:hidden"> Refresh </button></div>
+            <!-- Female Calculation -->
+            <div class="ml-0 sm:ml-5">
+                <h3 class="font-semibold mb-2">For Women</h3>
+                <label class="block">Weight (kg):</label>
+                <input type="number" id="weight-women" class="w-full p-2 border rounded mb-2 focus:outline-pink-500">
+                <label class="block">Height:</label>
+                <div class="flex space-x-2">
+                    <input type="number" id="feet-women" placeholder="Feet" class="w-1/2 p-2 border rounded focus:outline-pink-500">
+                    <input type="number" id="inch-women" placeholder="Inches" class="w-1/2 p-2 border rounded focus:outline-pink-500">
+                </div>
+                <label class="block mt-2">Age:</label>
+                <input type="number" id="age-women" class="w-full p-2 border rounded mb-4 focus:outline-pink-500">
+                <button id="result-women" class="w-full bg-pink-500 text-white p-2 rounded hover:bg-pink-600">Calculate</button>
+                <p class="mt-2 text-center">BMR: <span id="BMR-women" class="font-bold">0</span> kcal/day</p>
+                <p id="health-condition-women" class="bangla-font mt-4 text-center">Health Condition: <span id="health-condition-text-women">--</span></p>
+                <p id="suggestion-women" class="bangla-font mt-2 text-center">Suggestion: <span id="suggestion-text-women">--</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateBMR(weight, feet, inch, age, gender) {
+            const heightCm = (parseFloat(feet) * 30.48) + (parseFloat(inch) * 2.54);
+            const weightValue = parseFloat(weight);
+            const ageValue = parseFloat(age);
+            
+            if (isNaN(weightValue) || isNaN(heightCm) || isNaN(ageValue)) {
+                return "Invalid Input";
+            }
+            
+            return gender === 'male' 
+                ? (10 * weightValue) + (6.25 * heightCm) - (5 * ageValue) + 5
+                : (10 * weightValue) + (6.25 * heightCm) - (5 * ageValue) - 161;
+        }
+
+        function getHealthConditionAndSuggestion(bmr) {
+            let healthCondition, suggestion;
+            if (bmr < 1200) {
+                healthCondition = "অত্যন্ত কম বিপাক হার";
+                suggestion = "আপনার খাদ্যতালিকায় পুষ্টিকর খাবার যোগ করুন, বেশি ক্যালোরি গ্রহণ করুন এবং শারীরিক কার্যক্রম বাড়ান।";
+            } else if (bmr >= 1200 && bmr <= 1500) {
+                healthCondition = "কম বিপাক হার";
+                suggestion = "স্বাস্থ্যকর খাবার খান, নিয়মিত ব্যায়াম করুন এবং বেশি শক্তিদায়ক খাবার গ্রহণ করুন।";
+            } else if (bmr >= 1500 && bmr <= 1800) {
+                healthCondition = "স্বাভাবিক বিপাক হার ";
+                suggestion = "আপনার খাদ্যাভ্যাস ও জীবনযাত্রা ঠিক রাখুন। পর্যাপ্ত পানি পান করুন।";
+            } else if (bmr >= 1800 && bmr <= 2200) {
+                healthCondition = "উচ্চ বিপাক হার ";
+                suggestion = "আপনার শক্তি ধরে রাখতে পর্যাপ্ত প্রোটিন ও কার্বোহাইড্রেট গ্রহণ করুন।";
+            } else if (bmr > 2200) {
+                healthCondition = "খুব উচ্চ বিপাক হার ";
+                suggestion = "আপনার দেহ দ্রুত ক্যালোরি বার্ন করে, তাই পর্যাপ্ত খাবার খান এবং শরীরের শক্তির ঘাটতি পূরণ করুন।";
+            } else {
+                healthCondition = "invalid";
+                suggestion = "invalud";
+            }
+            return { healthCondition, suggestion };
+        }
+
+        document.getElementById("result").addEventListener("click", function () {
+            const bmr = calculateBMR(
+                document.getElementById("weight").value,
+                document.getElementById("feet").value,
+                document.getElementById("inch").value,
+                document.getElementById("age").value,
+                'male'
+            );
+            document.getElementById("BMR").textContent = isNaN(bmr) ? "Invalid" : bmr.toFixed(2);
+
+            const { healthCondition, suggestion } = getHealthConditionAndSuggestion(bmr);
+            document.getElementById("health-condition-text").textContent = healthCondition;
+            document.getElementById("suggestion-text").textContent = suggestion;
+        });
+        
+        document.getElementById("result-women").addEventListener("click", function () {
+            const bmr = calculateBMR(
+                document.getElementById("weight-women").value,
+                document.getElementById("feet-women").value,
+                document.getElementById("inch-women").value,
+                document.getElementById("age-women").value,
+                'female'
+            );
+            document.getElementById("BMR-women").textContent = isNaN(bmr) ? "Invalid" : bmr.toFixed(2);
+
+            const { healthCondition, suggestion } = getHealthConditionAndSuggestion(bmr);
+            document.getElementById("health-condition-text-women").textContent = healthCondition;
+            document.getElementById("suggestion-text-women").textContent = suggestion;
+        });
+    </script>
+</body>
+</html>
